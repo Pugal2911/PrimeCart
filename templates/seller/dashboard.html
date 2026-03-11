@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/seller/dashboard.css">
+
+    <!-- JS -->
+    <script src="/static/js/seller/dashboard.js" defer></script>
+    <style>
+        :root {
+            --primary-light: #e3f2fd;
+            --primary-medium: #bbdefb;
+            --primary-dark: #90caf9;
+            --accent-blue: #2196f3;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --shadow: rgba(33, 150, 243, 0.1);
+            --border-light: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fbff;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ================= HEADER ================= */
+        .seller-header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .seller-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .seller-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seller-logo i {
+            font-size: 1.8rem;
+        }
+
+        .seller-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .seller-profile span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .logout-btn {
+            background: var(--primary-medium);
+            color: var(--accent-blue);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        /* ================= MAIN ================= */
+        main {
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* ================= RFID SECTION ================= */
+        .rfid-section, .table-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 1px solid var(--border-light);
+        }
+
+        h2 {
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+        }
+
+        .rfid-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        #rfidTag {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 16px;
+            border: 2px solid var(--primary-medium);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--primary-light);
+            color: var(--text-dark);
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        #startScanBtn {
+            background: var(--accent-blue);
+            color: var(--white);
+        }
+
+        #startScanBtn:hover {
+            background: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        #stopScanBtn {
+            background: #ff9800;
+            color: var(--white);
+        }
+
+        #stopScanBtn:hover {
+            background: #f57c00;
+        }
+
+        .rfid-result {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .rfid-result input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: #f9f9f9;
+            color: var(--text-light);
+        }
+
+        /* ================= TABLES ================= */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .products-table thead {
+            background: var(--primary-light);
+        }
+
+        .products-table th {
+            padding: 16px;
+            text-align: left;
+            color: var(--accent-blue);
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-medium);
+        }
+
+        .products-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .products-table tbody tr:hover {
+            background-color: var(--primary-light);
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status.shipped {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .status.delivered{
+            background: #dff0f5;
+            color: #2e607d;
+        }
+        .status.processing {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        /* ================= FOOTER ================= */
+        .seller-footer {
+            background: var(--primary-light);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-light);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .rfid-box, .rfid-result {
+                flex-direction: column;
+            }
+            
+            #rfidTag, .rfid-result input {
+                min-width: 100%;
+            }
+            
+            .products-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="seller-header">
+    <div class="container seller-nav">
+        <div class="seller-logo">
+            <i class="fas fa-store"></i> SellerHub
+        </div>
+        <div class="seller-profile">
+            <span>{{ seller_name }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="container">
+    <!-- ================= RFID SECTION ================= -->
+    <section class="rfid-section">
+        <h2><i class="fas fa-rfid"></i> RFID Scanner</h2>
+        <div class="rfid-box">
+            <input type="text" id="rfidTag" placeholder="Scan RFID..." readonly>
+            <button id="startScanBtn" onclick="startRFIDScan()">
+                <i class="fas fa-play"></i> Start Scan
+            </button>
+            <button id="stopScanBtn" onclick="stopRFIDScan()" style="display:none;">
+                <i class="fas fa-stop"></i> Stop
+            </button>
+        </div>
+    </section>
+
+    <!-- ================= ORDERS TABLE ================= -->
+    <section class="table-section">
+        <h2><i class="fas fa-shopping-cart"></i> Orders</h2>
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if orders %}
+                    {% for o in orders %}
+                    <tr>
+                        <td>{{ o.order_number }}</td>
+                        <td>{{ o.product_name }}</td>
+                        <td>{{ o.quantity }}</td>
+                        <td>
+                            {% if o.status == 'Shipped' %}
+                                <span class="status shipped">Shipped</span>
+                            {% elif o.status == 'Delivered'%}
+                                <span class="status delivered">Delivered</span>
+                            {% else%}
+                                <span class="status processing">Processing</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align:center;">No orders found</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ================= PRODUCTS TABLE ================= -->
+    <section class="table-section">
+        <h2><i class="fas fa-box"></i> Products</h2>
+        <table class="products-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Customer(s)</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in seller_products %}
+                <tr>
+                    <td>{{ p.product_name }}</td>
+                    <td>{{ p.category }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{{ p.customer_name or '—' }}</td>
+                    <td>{{ p.order_status or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="seller-footer">
+    <p>&copy; 2026 SellerHub — RFID Inventory Management</p>
+</footer>
+
+<script>
+    function startRFIDScan() {
+        document.getElementById('startScanBtn').style.display = 'none';
+        document.getElementById('stopScanBtn').style.display = 'flex';
+        document.getElementById('rfidTag').placeholder = 'Scanning...';
+    }
+
+    function stopRFIDScan() {
+        document.getElementById('startScanBtn').style.display = 'flex';
+        document.getElementById('stopScanBtn').style.display = 'none';
+        document.getElementById('rfidTag').placeholder = 'Scan RFID...';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/tracking.css">
+    <script src="/static/js/tracking.js" defer></script>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="logo-text">PrimeCart</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
+                <a href="/my-orders" class="nav-link"><i class="fas fa-clipboard-list"></i> My Orders</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Track Your Order</h1>
+            <p>Enter your order number below for real-time delivery updates.</p>
+            
+            <div class="search-box-container">
+                <input type="text" id="orderSearch" placeholder="Example: ORD1001" value="{{ order.order_number if order else '' }}">
+                <button id="searchBtn" class="btn-search">
+                    <i class="fas fa-search"></i> Track
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="container orders-section">
+        <div class="orders-grid" id="ordersGrid">
+            {% if order %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">
+                        <i class="fas fa-box"></i> {{ order.order_number }}
+                    </div>
+                    <div class="order-date">
+                        Placed: <span id="headerPlacedDate">{{ order.placed_date }}</span>
+                    </div>
+                </div>
+
+                <div class="order-body">
+                    <div class="items-list">
+                        {% for item in order.order_items %}
+                        <div class="order-product">
+                            <div class="product-info">
+                                <h4>Product ID: {{ item.product_id }}</h4>
+                                <p>Qty: {{ item.quantity }} | ₹{{ '%.2f'|format(item.price) }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="order-summary">
+                        <div class="order-total">
+                            <strong>Total Amount:</strong> ₹{{ '%.2f'|format(order.total_amount) }}
+                        </div>
+                    </div>
+
+                    <div class="tracking-wrapper">
+                        <div class="tracking-header">
+                            <h3>Live Tracking</h3>
+                            <div id="statusBadge" class="order-status-badge">
+                                {{ order.status }}
+                            </div>
+                        </div>
+                        
+                        <div class="progress-tracker" id="progressTracker" data-order-id="{{ order.order_number }}">
+                            <div class="tracker-step" data-step="Ordered">
+                                <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                                <div class="step-label">Ordered</div>
+                                <div class="step-date" id="orderedDate">{{ order.placed_date }}</div>
+                            </div>
+                            <div class="tracker-step" data-step="Processing">
+                                <div class="step-icon"><i class="fas fa-cog"></i></div>
+                                <div class="step-label">Processing</div>
+                                <div class="step-date">--</div>
+                            </div>
+                            <div class="tracker-step" data-step="Shipped">
+                                <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
+                                <div class="step-label">Shipped</div>
+                                <div class="step-date">--</div>
+                            </div>
+                            <div class="tracker-step" data-step="Delivered">
+                                <div class="step-icon"><i class="fas fa-home"></i></div>
+                                <div class="step-label">Delivered</div>
+                                <div class="step-date">--</div>
+                            </div>
+                        </div>
+                        
+                        <div class="status-timeline" id="statusTimeline">
+                            </div>
+                        
+                        <div class="delivery-estimate-box">
+                            <i class="fas fa-truck-loading"></i>
+                            <span id="estimatedDelivery">Syncing with server...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-search-location"></i>
+                <h3>No Order Selected</h3>
+                <p>Please enter an Order ID in the search box above to see tracking details.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer>
+        <div class="container copyright">
+            <p>&copy; 2026 PrimeCart. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Handles the search button redirection
+        document.getElementById('searchBtn')?.addEventListener('click', function() {
+            const orderId = document.getElementById('orderSearch').value.trim();
+            if (orderId) {
+                // Redirect to the same page with the ID in the URL
+                // This allows the tracking.js to pick it up and fetch data
+                window.location.href = `/track?id=${orderId}`;
+            }
+        });
+
+        // Allow 'Enter' key to trigger search
+        document.getElementById('orderSearch')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') document.getElementById('searchBtn').click();
+        });
+    </script>
+</body>
+</html>

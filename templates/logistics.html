@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Dashboard | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #232f3e 0%, #131921 100%);
+            color: white;
+            padding: 18px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ff9900;
+        }
+        
+        .logo i {
+            color: #ff9900;
+        }
+        
+        .logo-text {
+            background: linear-gradient(to right, #ff9900, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-link {
+            color: #e6e6e6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-link:hover {
+            color: #ff9900;
+        }
+        
+        /* Main Content */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 36px;
+            color: #232f3e;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .dashboard-header h1 i {
+            color: #ff9900;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-info h3 {
+            font-size: 28px;
+            color: #232f3e;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: #666;
+            font-size: 15px;
+        }
+        
+        /* Update Form Styles */
+        .update-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #232f3e;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: #ff9900;
+        }
+        
+        .update-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group label i {
+            color: #ff9900;
+        }
+        
+        .form-control {
+            padding: 14px 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #ff9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #ff9900, #ffcc00);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #e68a00, #e6b800);
+            box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+        }
+        
+        /* Orders List Styles */
+        .orders-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 60px;
+        }
+        
+        .orders-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #ff9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .filter-select {
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .orders-list {
+            list-style: none;
+        }
+        
+        .order-item {
+            padding: 25px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .order-item:hover {
+            border-color: #ffcc00;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .order-id {
+            font-size: 20px;
+            font-weight: 700;
+            color: #232f3e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .order-id i {
+            color: #ff9900;
+        }
+        
+        .order-details {
+            display: flex;
+            gap: 25px;
+            color: #666;
+            font-size: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .detail-item i {
+            color: #888;
+        }
+        
+        .order-status {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-shipped {
+            background-color: #e6f0ff;
+            color: #0066cc;
+        }
+        
+        .status-out-for-delivery {
+            background-color: #fff4e6;
+            color: #ff9900;
+        }
+        
+        .status-delivered {
+            background-color: #e7f7ef;
+            color: #00a650;
+        }
+        
+        .status-pending {
+            background-color: #f0f2f5;
+            color: #666;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: 1px solid #ddd;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-action:hover {
+            background-color: #f5f5f5;
+            color: #ff9900;
+            border-color: #ffcc00;
+        }
+        
+        /* Delivery Map Section */
+        .map-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 60px;
+        }
+        
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .map-container {
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), url('https://images.unsplash.com/photo-1543286386-713bdd548da4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .map-container i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        .map-container p {
+            font-size: 18px;
+            max-width: 500px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #e6e6e6;
+            padding: 50px 0 30px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff9900;
+            display: inline-block;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #ff9900;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #3a4553;
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .order-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .order-actions {
+                justify-content: flex-start;
+            }
+            
+            .search-box input {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .update-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .orders-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .search-filter {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .map-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .order-details {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-shipping-fast"></i>
+                <span class="logo-text">PrimeCart Logistics</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link"><i class="fas fa-store"></i> Storefront</a>
+                <a href="#" class="nav-link"><i class="fas fa-tachometer-alt"></i> Admin Dashboard</a>
+                <a href="#" class="nav-link"><i class="fas fa-box"></i> Inventory</a>
+                <a href="#" class="nav-link"><i class="fas fa-users"></i> Drivers</a>
+                <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1><i class="fas fa-map-marked-alt"></i> Logistics Dashboard</h1>
+            <div class="current-time">
+                <i class="far fa-clock"></i>
+                <span id="currentDateTime">Loading...</span>
+            </div>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #e6f0ff; color: #0066cc;">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="activeDeliveries">48</h3>
+                    <p>Active Deliveries</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #e7f7ef; color: #00a650;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="deliveredToday">132</h3>
+                    <p>Delivered Today</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #fff4e6; color: #ff9900;">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pendingOrders">7</h3>
+                    <p>Pending Orders</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #ffe6e6; color: #ff3333;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="delayedShipments">3</h3>
+                    <p>Delayed Shipments</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Update Order Status Form -->
+        <section class="update-section">
+            <h2 class="section-title"><i class="fas fa-edit"></i> Update Order Status</h2>
+            
+            <form class="update-form" method="POST">
+                <div class="form-group">
+                    <label for="order_id"><i class="fas fa-hashtag"></i> Order ID</label>
+                    <input type="text" id="order_id" name="order_id" class="form-control" placeholder="e.g., ORD-7842" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status"><i class="fas fa-flag"></i> Status</label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="">Select Status</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes"><i class="fas fa-sticky-note"></i> Notes (Optional)</label>
+                    <input type="text" id="notes" name="notes" class="form-control" placeholder="Add update notes...">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Update Status
+                </button>
+            </form>
+        </section>
+        
+        <!-- Orders List -->
+        <section class="orders-section">
+            <div class="orders-header">
+                <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Recent Orders</h2>
+                
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search by Order ID or Customer...">
+                    </div>
+                    
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Processing</option>
+                        <option>Shipped</option>
+                        <option>Out for Delivery</option>
+                        <option>Delivered</option>
+                    </select>
+                </div>
+            </div>
+            
+            <ul class="orders-list">
+                <!-- Order 1 -->
+                <li class="order-item">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <i class="fas fa-box"></i>
+                            ORD-7842
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <i class="far fa-user"></i>
+                                <span>John Smith</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>Nov 12, 2023</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>123 Main St, New York</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$1,249.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-status status-delivered">
+                        <i class="fas fa-check-circle"></i>
+                        Delivered
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn-action" title="Track">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </button>
+                        <button class="btn-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+                
+                <!-- Order 2 -->
+                <li class="order-item">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <i class="fas fa-box"></i>
+                            ORD-7841
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <i class="far fa-user"></i>
+                                <span>Emma Johnson</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>Nov 11, 2023</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>456 Oak Ave, Chicago</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$299.98</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-status status-out-for-delivery">
+                        <i class="fas fa-truck"></i>
+                        Out for Delivery
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn-action" title="Track">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </button>
+                        <button class="btn-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+                
+                <!-- Order 3 -->
+                <li class="order-item">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <i class="fas fa-box"></i>
+                            ORD-7840
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <i class="far fa-user"></i>
+                                <span>Michael Brown</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>Nov 10, 2023</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>789 Pine Rd, Los Angeles</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$899.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-status status-shipped">
+                        <i class="fas fa-shipping-fast"></i>
+                        Shipped
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn-action" title="Track">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </button>
+                        <button class="btn-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+                
+                <!-- Order 4 -->
+                <li class="order-item">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <i class="fas fa-box"></i>
+                            ORD-7839
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <i class="far fa-user"></i>
+                                <span>Sarah Williams</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>Nov 9, 2023</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>321 Elm St, Houston</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$549.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-status status-delivered">
+                        <i class="fas fa-check-circle"></i>
+                        Delivered
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn-action" title="Track">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </button>
+                        <button class="btn-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+                
+                <!-- Order 5 -->
+                <li class="order-item">
+                    <div class="order-info">
+                        <div class="order-id">
+                            <i class="fas fa-box"></i>
+                            ORD-7838
+                        </div>
+                        <div class="order-details">
+                            <div class="detail-item">
+                                <i class="far fa-user"></i>
+                                <span>David Miller</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="far fa-calendar"></i>
+                                <span>Nov 8, 2023</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>654 Birch Blvd, Miami</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>$129.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-status status-pending">
+                        <i class="fas fa-clock"></i>
+                        Processing
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="btn-action" title="Track">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </button>
+                        <button class="btn-action" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        
+        <!-- Delivery Map Section -->
+        <section class="map-section">
+            <div class="map-header">
+                <h2 class="section-title"><i class="fas fa-map"></i> Active Delivery Map</h2>
+                <div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i> Refresh Map
+                    </button>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                <i class="fas fa-map-marked-alt"></i>
+                <p>Live delivery tracking map would be displayed here with real-time location of delivery vehicles.</p>
+                <small>Integration with mapping service required</small>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Logistics</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Delivery Tracking</a></li>
+                        <li><a href="#">Driver Management</a></li>
+                        <li><a href="#">Route Optimization</a></li>
+                        <li><a href="#">Warehouse Locations</a></li>
+                        <li><a href="#">Shipping Rates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">Shipping Policies</a></li>
+                        <li><a href="#">Returns & Exchanges</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About PrimeCart</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 PrimeCart Logistics. All rights reserved. | <a href="#" style="color: #ff9900;">Privacy Policy</a> | <a href="#" style="color: #ff9900;">Terms of Service</a></p>
+                <p>Real-time logistics dashboard for shipment tracking and management.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Update current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Update stats with random changes for demo
+        function updateStats() {
+            // Simulate real-time changes
+            const activeDeliveries = document.getElementById('activeDeliveries');
+            const deliveredToday = document.getElementById('deliveredToday');
+            const pendingOrders = document.getElementById('pendingOrders');
+            const delayedShipments = document.getElementById('delayedShipments');
+            
+            // Randomly update stats
+            if (Math.random() > 0.7) {
+                let currentActive = parseInt(activeDeliveries.textContent);
+                let newActive = Math.max(40, Math.min(60, currentActive + (Math.random() > 0.5 ? 1 : -1)));
+                activeDeliveries.textContent = newActive;
+            }
+            
+            if (Math.random() > 0.8) {
+                let currentDelivered = parseInt(deliveredToday.textContent);
+                deliveredToday.textContent = currentDelivered + Math.floor(Math.random() * 3);
+            }
+        }
+        
+        // Form submission handler
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const orderId = document.getElementById('order_id').value;
+            const status = document.getElementById('status').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!orderId || !status) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Simulate form submission
+            alert(`Order ${orderId} status updated to: ${status}\nNotes: ${notes || 'No notes provided'}`);
+            
+            // Reset form
+            this.reset();
+            
+            // Update stats to reflect change
+            updateStats();
+        });
+        
+        // Search functionality
+        const searchInput = document.querySelector('.search-box input');
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                const searchTerm = this.value.toLowerCase();
+                const orderItems = document.querySelectorAll('.order-item');
+                
+                orderItems.forEach(item => {
+                    const orderId = item.querySelector('.order-id').textContent.toLowerCase();
+                    const customerName = item.querySelector('.detail-item span').textContent.toLowerCase();
+                    
+                    if (orderId.includes(searchTerm) || customerName.includes(searchTerm)) {
+                        item.style.display = 'grid';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+        });
+        
+        // Filter functionality
+        const filterSelect = document.querySelector('.filter-select');
+        filterSelect.addEventListener('change', function() {
+            const filterValue = this.value;
+            const orderItems = document.querySelectorAll('.order-item');
+            
+            orderItems.forEach(item => {
+                const statusElement = item.querySelector('.order-status');
+                const statusText = statusElement.textContent.trim();
+                
+                if (filterValue === 'All Status' || statusText.includes(filterValue)) {
+                    item.style.display = 'grid';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+        
+        // Action button handlers
+        document.querySelectorAll('.btn-action').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.title;
+                const orderId = this.closest('.order-item').querySelector('.order-id').textContent.trim();
+                
+                if (action === 'Track') {
+                    alert(`Tracking order: ${orderId}\nOpening tracking map...`);
+                } else if (action === 'View Details') {
+                    alert(`Viewing details for order: ${orderId}`);
+                } else if (action === 'Edit') {
+                    // Pre-fill the form with this order's data
+                    document.getElementById('order_id').value = orderId;
+                    alert(`Editing order: ${orderId}\nOrder ID pre-filled in the form above.`);
+                }
+            });
+        });
+        
+        // Initialize
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        setInterval(updateStats, 5000);
+        
+        // Simulate initial stats updates
+        setTimeout(() => {
+            updateStats();
+        }, 2000);
+    </script>
+</body>
+</html>

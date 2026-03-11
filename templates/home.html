@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrimeCart | Your Amazon-like Shopping Destination</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="icon" href="/static/img/logo.png">
+    
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="#" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="logo-text">PrimeCart</span>
+                </a>
+                
+                <div class="delivery-info">
+                    <div class="delivery-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Free Shipping Over $50</span>
+                    </div>
+                    <div class="delivery-item">
+                        <i class="fas fa-undo"></i>
+                        <span>30-Day Returns</span>
+                    </div>
+                    <div class="delivery-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure Shopping</span>
+                    </div>
+                </div>
+                
+                <div class="user-actions">
+                    {% if user %}
+                        <!-- User is logged in -->
+                        <a href="#" class="user-action">
+                            <i class="fas fa-user"></i>
+                            <span>{{ user.full_name or user.username }}</span>
+                        </a>
+                        <a href="/my-orders" class="user-action">
+                            <i class="fas fa-box"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a href="/cart" class="user-action cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Cart</span>
+                            <span class="cart-count">{{ total_cart_items | default(0) }}</span>
+                        </a>
+                        <a href="/logout" class="user-action">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    {% else %}
+                        <!-- User not logged in -->
+                        <a href="/login" class="user-action">
+                            <i class="fas fa-user"></i>
+                            <span>Login / Signup</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="header-bottom">
+                <div class="search-container">
+                    <select class="search-select">
+                        <option>All Categories</option>
+                        <option>Electronics</option>
+                        <option>Fashion</option>
+                        <option>Home & Kitchen</option>
+                        <option>Books</option>
+                        <option>Sports</option>
+                    </select>
+                    <input type="text" class="search-input" placeholder="Search for products, brands, and more...">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>
+                
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-bolt"></i>
+                        Today's Deals
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-gift"></i>
+                        Gift Cards
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-question-circle"></i>
+                        Help
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Carousel -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-carousel">
+                <!-- Slide 1 -->
+                <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
+                    <div class="carousel-content">
+                        <h2>Black Friday Sale!</h2>
+                        <p>Up to 70% off on electronics, fashion, home appliances and more. Limited time offer!</p>
+                        <button class="carousel-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Shop Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Slide 2 -->
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
+                    <div class="carousel-content">
+                        <h2>Free Shipping</h2>
+                        <p>Enjoy free delivery on all orders over $50. No minimum purchase required for Prime members!</p>
+                        <button class="carousel-btn">
+                            <i class="fas fa-shipping-fast"></i>
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Slide 3 -->
+                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
+                    <div class="carousel-content">
+                        <h2>New Arrivals</h2>
+                        <p>Discover the latest trends in fashion, electronics, and home decor. Fresh stock added daily!</p>
+                        <button class="carousel-btn">
+                            <i class="fas fa-eye"></i>
+                            Browse New Items
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="carousel-dots">
+                    <div class="carousel-dot active" data-slide="0"></div>
+                    <div class="carousel-dot" data-slide="1"></div>
+                    <div class="carousel-dot" data-slide="2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Shop by Category</h2>
+                <a href="#" class="view-all">
+                    View All Categories
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="categories-grid">
+                {% for cat in categories %}
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="{{ cat.icon }}"></i>
+                    </div>
+                    <h3 class="category-name">{{ cat.category }}</h3>
+                    <p class="category-count">{{ cat.product_count }} Products</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Featured Products</h2>
+                <a href="#" class="view-all">
+                    View All Products
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="products-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    {% if product.stock > 20 %}
+                    <div class="product-badge">Best Seller</div>
+                    {% elif product.stock <= 5 %}
+                    <div class="product-badge">Limited Stock</div>
+                    {% else %}
+                    <div class="product-badge">New</div>
+                    {% endif %}
+                    
+                    <div class="product-image">
+                        <!-- Replace with actual image URL if stored in DB -->
+                        {% if product.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" width="80">
+                        {% else %}
+                            <img src="" alt="{{ product.name }}" width="80">
+                        {% endif %}
+                        <div class="product-actions">
+                            <button class="action-btn" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button class="action-btn" title="Quick View">
+                                <i class="far fa-eye"></i>
+                            </button>
+                            <button class="action-btn" title="Compare">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="product-content">
+                        <span class="product-category">{{ product.category }}</span>
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        
+                        <div class="product-price">
+                            <span class="current-price">₹{{ product.price }}</span>
+                        </div>
+                        
+                        <div class="product-stock">
+                            <i class="fas fa-box"></i>
+                            {% if product.stock > 5 %}
+                            <span class="stock-in">In Stock: {{ product.stock }}</span>
+                            {% elif product.stock > 0 %}
+                            <span class="stock-low">Low Stock: {{ product.stock }}</span>
+                            {% else %}
+                            <span class="stock-out">Out of Stock</span>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="product-card" data-product-id="{{ product.id }}">
+                            <div class="product-footer">
+                                <a href="#" class="btn-buy">Buy Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-column">
+                    <h3>Get to Know Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About PrimeCart</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Releases</a></li>
+                        <li><a href="#">PrimeCart Science</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Make Money with Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Sell on PrimeCart</a></li>
+                        <li><a href="#">Become an Affiliate</a></li>
+                        <li><a href="#">Advertise Your Products</a></li>
+                        <li><a href="#">Fulfillment by PrimeCart</a></li>
+                        <li><a href="#">Seller Protection</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>PrimeCart Payment</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">PrimeCart Business Card</a></li>
+                        <li><a href="#">Shop with Points</a></li>
+                        <li><a href="#">Reload Your Balance</a></li>
+                        <li><a href="#">PrimeCart Currency Converter</a></li>
+                        <li><a href="#">Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Let Us Help You</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Your Account</a></li>
+                        <li><a href="/tracking">Your Orders</a></li>
+                        <li><a href="#">Shipping Rates & Policies</a></li>
+                        <li><a href="#">Returns & Replacements</a></li>
+                        <li><a href="#">Help & Customer Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Stay Connected</h3>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    <p>&copy; 2023 PrimeCart. All rights reserved. | <a href="#" style="color: #ff9900;">Privacy Policy</a> | <a href="#" style="color: #ff9900;">Terms of Service</a></p>
+                    <p>Prices and availability are subject to change. All trademarks are property of their respective owners.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+    <script src="/static/js/home.js" defer></script>
+</body>
+</html>

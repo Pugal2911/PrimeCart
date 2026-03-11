@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href= "/static/css/my_orders.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="logo-text">PrimeCart</span>
+                </a>
+                <div class="header-actions">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="/my-orders" class="nav-link active">
+                        <i class="fas fa-clipboard-list"></i>
+                        Orders
+                    </a>
+                    <a href="/cart" class="nav-link cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                        <span class="cart-count"> {{ stats.cart_items}}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Orders Header -->
+    <section class="orders-header">
+        <div class="container">
+            <div class="orders-title">
+                <i class="fas fa-clipboard-list"></i>
+                <h1>Your Orders</h1>
+            </div>
+            <p class="orders-subtitle">Track your orders and view order history</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Orders Stats -->
+        <section class="orders-stats" id="ordersStats">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #e6f0ff; color: #0066cc;">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="totalOrders">{{ stats.total }}</h3>
+                    <p>Total Orders</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #e6f0ff; color: #0066cc;">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="processingOrders">{{ stats.processing }}</h3>
+                    <p>Processing Orders</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #fff4e6; color: #ff9900;">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="shippedOrders">{{ stats.shipped }}</h3>
+                    <p>Shipped Orders</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #e7f7ef; color: #00a650;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="deliveredOrders">{{ stats.delivered }}</h3>
+                    <p>Delivered Orders</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="orders-container">
+            <div id="ordersList">
+                {% if orders %}
+                    {% for order in orders %}
+                    <div class="order-card" data-status="{{ order.status_class }}" data-date="{{ order.placed_date }}" data-id="{{ order.order_number }}">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <div class="order-id">
+                                    <i class="fas fa-box"></i>
+                                    {{ order.order_number }}
+                                </div>
+                                <div class="order-date">Placed on {{ order.placed_date }}</div>
+                                <div class="order-status {{ order.status_class }}">
+                                    {% if order.status == 'Delivered' %}
+                                        <i class="fas fa-check-circle"></i> Delivered
+                                    {% elif order.status == 'Shipped' %}
+                                        <i class="fas fa-shipping-fast"></i> Shipped
+                                    {% elif order.status == 'Processing' %}
+                                        <i class="fas fa-clock"></i> Processing
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i> Cancelled
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="order-total">${{ '%.2f'|format(order.total_amount) }}</div>
+                        </div>
+
+                        <div class="order-items">
+                            {% for item in order.order_items %}
+                            <div class="order-item">
+                                <div class="item-image">
+                                    <img src="{{ url_for('static', filename='uploads/' ~ (item.image or 'default.png')) }}" alt="{{ item.name }}">
+                                </div>
+                                <div class="item-details">
+                                    <h4>{{ item.name }}</h4>
+                                    <p>{{ item.category }}</p>
+                                    <div class="item-quantity">Quantity: {{ item.quantity }}</div>
+                                </div>
+                                <div class="item-price">${{ '%.2f'|format(item.price * item.quantity) }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="order-footer">
+                            <div class="shipping-info">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Delivered to: {{ order.shipping_address or 'Not Provided' }}
+                            </div>
+                            <div class="order-actions">
+                                <a href="{{ url_for('track_order', order_id=order.order_id) }}"
+                                class="btn-action btn-track">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Track Shipment
+                                </a>
+
+                                <button class="btn-action btn-reorder">
+                                    <i class="fas fa-redo"></i>
+                                    Buy Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h2>No Orders Found</h2>
+                        <p>You haven't placed any orders yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ShopTrack</h3>
+                    <p>Your one-stop solution for tracking all your online orders in one place.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Your Orders</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Your Account</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> support@shoptrack.com</li>
+                        <li><i class="fas fa-phone"></i> 1-800-SHOPTRACK</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Commerce St, San Francisco, CA</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ShopTrack. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    </script>
+</body>
+</html>

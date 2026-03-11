@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/signup.css">
+    <script src="/static/js/signup.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="logo-text">PrimeCart</span>
+                </a>
+                
+                <a href="/login" class="login-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Already have an account? Sign in
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Signup Container -->
+    <main class="signup-container">
+        <div class="signup-wrapper">
+            <!-- Left Panel: Benefits & Testimonials -->
+            <div class="signup-left">
+                <div class="signup-header">
+                    <h1>Join PrimeCart Today</h1>
+                    <p>Create your account to unlock exclusive benefits and start shopping from millions of products.</p>
+                </div>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Free & Fast Delivery</h3>
+                            <p>Enjoy free shipping on orders over $50. Get same-day delivery in select cities.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Secure Shopping</h3>
+                            <p>Your personal information is protected with bank-level security encryption.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Exclusive Deals</h3>
+                            <p>Get access to members-only discounts, early access to sales, and special promotions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="benefit-content">
+                            <h3>Personalized Experience</h3>
+                            <p>Receive product recommendations based on your browsing and purchase history.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <p>"PrimeCart has completely changed how I shop online. The delivery is incredibly fast, and the customer service is outstanding. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Miller</h4>
+                            <p>PrimeCart Member since 2021</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Signup Form -->
+            <div class="signup-right">
+                <!-- Alert Messages -->
+                <div class="alert alert-success" id="successAlert">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Account created successfully! Redirecting to your dashboard...</span>
+                </div>
+                
+                <div class="alert alert-error" id="errorAlert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorMessage">Please fix the errors in the form before submitting.</span>
+                </div>
+                
+                <div class="form-header">
+                    <h2>Create Your Account</h2>
+                    <p>Fill in your details to get started. All fields marked with <span class="required">*</span> are required.</p>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-bar">
+                    <div class="progress-step">
+                        <div class="step-circle active" id="step1">1</div>
+                        <div class="step-label active">Personal Info</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step2">2</div>
+                        <div class="step-label">Account Details</div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-circle" id="step3">3</div>
+                        <div class="step-label">Preferences</div>
+                    </div>
+                </div>
+                
+                <!-- Signup Form -->
+                <form class="signup-form" id="signupForm">
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step active" id="step1Form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span class="required">*</span></label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="firstName" class="form-control" placeholder="Enter your first name" required>
+                                </div>
+                                <div class="error-message" id="firstNameError">Please enter your first name</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span class="required">*</span></label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="lastName" class="form-control" placeholder="Enter your last name" required>
+                                </div>
+                                <div class="error-message" id="lastNameError">Please enter your last name</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                            </div>
+                            <div class="error-message" id="emailError">Please enter a valid email address</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="phone-input">
+                                <select class="phone-country" id="countryCode">
+                                    <option value="+1">US +1</option>
+                                    <option value="+44">GB +44</option>
+                                    <option value="+91">IN +91</option>
+                                    <option value="+61">AU +61</option>
+                                    <option value="+49">DE +49</option>
+                                </select>
+                                <div class="input-with-icon phone-number">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                                </div>
+                            </div>
+                            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="nextStep1">Continue <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Account Details -->
+                    <div class="form-step" id="step2Form">
+                        <div class="form-group">
+                            <label for="password">Password <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" class="form-control" placeholder="Create a strong password" required>
+                                <button type="button" class="password-toggle" id="passwordToggle1">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="passwordError">Password must be at least 8 characters with letters and numbers</div>
+                            
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-meter">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <div class="strength-text">Password strength: <span id="strengthText">None</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your password" required>
+                                <button type="button" class="password-toggle" id="passwordToggle2">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="prevStep1"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button type="button" class="btn btn-primary" id="nextStep2">Continue <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Preferences -->
+                    <div class="form-step" id="step3Form">
+                        <div class="form-options">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="newsletter" checked>
+                                <label for="newsletter">Yes, I want to receive exclusive offers, promotions, and updates from PrimeCart via email.</label>
+                            </div>
+                            
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="smsAlerts">
+                                <label for="smsAlerts">Receive order updates and promotional alerts via SMS (standard messaging rates may apply).</label>
+                            </div>
+                            
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="terms" required>
+                                <label for="terms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a> <span class="required">*</span></label>
+                            </div>
+                        </div>
+                        
+                        <div class="divider">
+                            <span>Or sign up with</span>
+                        </div>
+                        
+                        <div class="social-login">
+                            <button type="button" class="btn btn-social" id="googleSignup">
+                                <i class="fab fa-google"></i>
+                                Google
+                            </button>
+                            <button type="button" class="btn btn-social" id="facebookSignup">
+                                <i class="fab fa-facebook-f"></i>
+                                Facebook
+                            </button>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="prevStep2"><i class="fas fa-arrow-left"></i> Back</button>
+                            <button type="submit" class="btn btn-primary btn-full" id="createAccountBtn">Create Account</button>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                            <p style="color: #666;">Already have an account? <a href="/login" style="color: #ff9900; text-decoration: none; font-weight: 600;">Sign in here</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2023 PrimeCart. All rights reserved. All trademarks are property of their respective owners.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+        
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/admin/dashboard.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/js/admin/dashboard.js" defer></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="icon" href="/static/img/logo.png">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">
+                <i class="fas fa-cogs"></i>
+                <span class="admin-logo-text">PrimeCart Admin</span>
+            </div>
+            <p class="admin-subtitle">Administration Dashboard</p>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="{{ url_for('admin_dashboard') }}"
+                class="menu-link {% if active_page == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{{ url_for('logout') }}"
+                class="menu-link {% if active_page == 'logout' %}active{% endif %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+            </a>
+            </li>
+
+
+            <div class="sidebar-footer">
+                <div class="admin-profile">
+                    <div class="admin-avatar">
+                        A
+                    </div>
+                    <div class="admin-info">
+                        <h4>Admin</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </ul>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h1>Admin Dashboard</h1>
+                <p>Welcome back, Administrator. Here's what's happening with your store today.</p>
+            </div>
+            
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search products, orders, customers...">
+                </div>
+            </div>
+        </header>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages w-80">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e7f7ef; color: #00a650;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ stats.total_orders }}</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #e6f0ff; color: #0066cc;">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>₹{{ "%.2f"|format(stats.revenue) }}</h3>
+                        <p>Revenue</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #fff4e6; color: #ff9900;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ stats.customers }}</h3>
+                        <p>Customers</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #ffe6e6; color: #ff3333;">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ stats.low_stock }}</h3>
+                        <p>Low Stock Items</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Products Management Section -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Product Management</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+
+                    <!-- Add Seller Button -->
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSellerModal">
+                        <i class="fas fa-truck"></i> Add Seller / Delivery Agent
+                    </button>
+
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>
+                                <div class="product-info">
+                                    <div class="product-img">
+                                        {% if product.category.lower() == 'laptops' %}
+                                            <i class="fas fa-laptop"></i>
+                                        {% elif product.category.lower() == 'audio' %}
+                                            <i class="fas fa-headphones"></i>
+                                        {% elif product.category.lower() == 'phones' %}
+                                            <i class="fas fa-mobile-alt"></i>
+                                        {% elif product.category.lower() == 'gaming' %}
+                                            <i class="fas fa-gamepad"></i>
+                                        {% elif product.category.lower() == 'cameras' %}
+                                            <i class="fas fa-camera"></i>
+                                        {% else %}
+                                            <i class="fas fa-box"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="product-name">{{ product.name }}</div>
+                                        <div class="product-category">{{ product.category }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ product.category }}</td>
+                            <td>${{ '%.2f'|format(product.price) }}</td>
+                            <td>{{ product.stock }}</td>
+                                <td>
+                                {% if product.stock == 0 %}
+                                    <span class="status-badge status-out">Out of Stock</span>
+                                {% elif product.stock <= 5 %}
+                                    <span class="status-badge status-low">Low Stock</span>
+                                {% else %}
+                                    <span class="status-badge status-active">In Stock</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-action" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="btn-action" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </section>
+        
+        <!-- Recent Orders Section -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2>Recent Orders</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.order_number }}</td>
+                            <td>{{ order.customer_name }}</td>
+                            <td>{{ order.created_at.strftime("%b %d, %Y") }}</td>
+                            <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                            <td>
+                                {% set status_class = {
+                                    'Processing': 'status-pending',
+                                    'Shipped': 'status-shipped',
+                                    'Delivered': 'status-delivered',
+                                    'Cancelled': 'status-cancelled'
+                                }[order.status] %}
+                                <span class="status-badge {{ status_class }}">{{ order.status }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('order_confirmation', order_number=order.order_number) }}" class="btn-action" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No recent orders found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <form id="addProductForm">
+                <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productCategory" class="form-label">Category</label>
+                        <select class="form-select" id="productCategory" name="category" required>
+                            <option value="">Select Category</option>
+                            <option>Electronics</option>
+                            <option>Fashion</option>
+                            <option>Home & Kitchen</option>
+                            <option>Sports & Outdoors</option>
+                            <option>Books & Media</option>
+                            <option>Baby & Kids</option>
+                            <option>Automotive</option>
+                            <option>Gaming</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="productPrice" name="price" step="0.01" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productStock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="productStock" name="stock" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="productImage" class="form-label">Product Image</label>
+                        <input type="file"
+                            class="form-control"
+                            id="productImage"
+                            name="image"
+                            accept="image/*"
+                            required>
+                        <small class="text-muted">Upload product image (jpg, png, webp)</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">RFID Tag</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="productRFID" name="rfid_tag" readonly>
+                            <button class="btn btn-outline-primary" type="button" id="scanRFIDBtn">
+                                <i class="fas fa-rss"></i> Scan
+                            </button>
+                        </div>
+                        <small class="text-muted">Tap RFID card on reader</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Add Product</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Seller Modal -->
+    <div class="modal fade" id="addSellerModal" tabindex="-1" aria-labelledby="addSellerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSellerModalLabel">Add Seller / Shipping</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for adding seller -->
+                <form id="addSellerForm" method="POST" action="{{ url_for('add_seller') }}">
+                    <div class="mb-3">
+                        <label for="sellerName" class="form-label">Seller Name</label>
+                        <input type="text" class="form-control" id="sellerName" name="sellerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sellerEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="sellerEmail" name="sellerEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sellerPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="sellerPassword" name="sellerPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userRole" class="form-label">Role</label>
+                        <select class="form-select" id="userRole" name="userRole" required>
+                            <option value="" selected disabled>Select Role</option>
+                            <option value="seller">Seller</option>
+                            <option value="delivery_agent">Delivery Agent</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success" form="addSellerForm">Add Seller</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

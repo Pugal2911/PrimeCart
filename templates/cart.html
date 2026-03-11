@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel = "stylesheet" href = "/static/css/cart.css">
+    <script src="/static/js/cart.js" defer></script>
+</head>
+<body>
+    
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="logo-text">PrimeCart</span>
+                </a>
+                
+                <div class="header-actions">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="/my-orders" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        Orders
+                    </a>
+                    <a href="/cart" class="nav-link cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                        <span class="cart-count" id="cartCount"> {{ total_items }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-links">
+                <a href="/">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Shopping Cart</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Cart Header -->
+        <div class="cart-header">
+            <div>
+                <h1 class="cart-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Shopping Cart
+                </h1>
+                <p class="item-count" id="itemCount">3 items in your cart</p>
+            </div>
+            <div>
+                <a href="/" class="nav-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+
+        <!-- Cart Content -->
+        <div id="cartContent">
+            <!-- Cart with Items -->
+            <div class="cart-layout" id="cartWithItems">
+                <!-- Left Column: Cart Items -->
+                <div class="cart-items-section">
+                    <h2 class="section-title">Cart Items</h2>
+
+                    <div class="cart-items">
+                        {% for item in cart_items %}
+                        <div class="cart-item" data-item-id="{{ item.cart_id }}">
+                            <div class="product-image">
+                                <img src="{{ url_for('static', filename='uploads/' ~ item.image) }}" alt="{{ item.name }}">
+                            </div>
+
+                            <div class="product-details">
+                                <h3 class="product-name">
+                                    <a href="#">{{ item.name }}</a>
+                                </h3>
+                                <span class="product-category">{{ item.category }}</span>
+                                <p class="product-stock">
+                                    {% if item.stock > 0 %}
+                                    <i class="fas fa-check-circle"></i> In Stock
+                                    {% else %}
+                                    <i class="fas fa-times-circle"></i> Out of Stock
+                                    {% endif %}
+                                </p>
+
+                                <div class="item-actions">
+                                    <a href="{{ url_for('delete_cart_item', cart_id=item.cart_id) }}" class="action-link delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="quantity-controls">
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn minus" data-item-id="{{ item.cart_id }}">-</button>
+                                    <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.stock }}" data-item-id="{{ item.cart_id }}">
+                                    <button class="quantity-btn plus" data-item-id="{{ item.cart_id }}">+</button>
+                                </div>
+                            </div>
+
+                            <div class="item-price">
+                                <div class="current-price">${{ "%.2f"|format(item.price * item.quantity) }}</div>
+                                <div class="original-price">${{ "%.2f"|format(item.price * item.quantity * 1.2) }}</div>
+                                <div class="item-savings">Save ${{ "%.2f"|format(item.price * item.quantity * 0.2) }}</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p>Your cart is empty.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                
+                <!-- Right Column: Order Summary -->
+                <div class="cart-summary-section">
+                    <h2 class="summary-title">Order Summary</h2>
+                    
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Items ({{ cart_items|length }}):</span>
+                            <span id="subtotal">${{ "%.2f"|format(subtotal) }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping & handling:</span>
+                            <span id="shipping">${{ "%.2f"|format(shipping) }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Estimated tax:</span>
+                            <span id="tax">${{ "%.2f"|format(tax) }}</span>
+                        </div>
+                        <div class="summary-row savings">
+                            <span>Total savings:</span>
+                            <span id="savings">-${{ "%.2f"|format(savings) }}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Order Total:</span>
+                            <span id="orderTotal">${{ "%.2f"|format(order_total) }}</span>
+                        </div>
+                    </div>
+                    
+                    <form action="{{ url_for('checkout') }}" method="POST">
+                        <button type="submit" class="checkout-btn" id="checkoutBtn">
+                            <i class="fas fa-lock"></i>
+                            Proceed to Checkout
+                        </button>
+                    </form>
+
+                    
+                    <div class="secure-checkout">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Secure checkout - Your payment information is encrypted</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Continue Shopping Section -->
+        <div class="continue-shopping">
+            <h3>You might also like</h3>
+            <div class="related-products">
+                <a href="#" class="related-product">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Smartphone">
+                    <h4>Smartphone Galaxy ZX Pro</h4>
+                    <div class="price">$899.99</div>
+                </a>
+                
+                <a href="#" class="related-product">
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Smart Speaker">
+                    <h4>Smart Speaker with Voice Assistant</h4>
+                    <div class="price">$129.99</div>
+                </a>
+                
+                <a href="#" class="related-product">
+                    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Camera">
+                    <h4>Mirrorless Camera 4K Video</h4>
+                    <div class="price">$1,199.99</div>
+                </a>
+                
+                <a href="#" class="related-product">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sneakers">
+                    <h4>Running Shoes - Professional Grade</h4>
+                    <div class="price">$129.99</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Get to Know Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About PrimeCart</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Releases</a></li>
+                        <li><a href="#">PrimeCart Science</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Make Money with Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Sell on PrimeCart</a></li>
+                        <li><a href="#">Become an Affiliate</a></li>
+                        <li><a href="#">Advertise Your Products</a></li>
+                        <li><a href="#">Fulfillment by PrimeCart</a></li>
+                        <li><a href="#">Seller Protection</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>PrimeCart Payment</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">PrimeCart Business Card</a></li>
+                        <li><a href="#">Shop with Points</a></li>
+                        <li><a href="#">Reload Your Balance</a></li>
+                        <li><a href="#">PrimeCart Currency Converter</a></li>
+                        <li><a href="#">Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Let Us Help You</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Your Account</a></li>
+                        <li><a href="/tracking">Your Orders</a></li>
+                        <li><a href="#">Shipping Rates & Policies</a></li>
+                        <li><a href="#">Returns & Replacements</a></li>
+                        <li><a href="#">Help & Customer Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 PrimeCart. All rights reserved. | <a href="#" style="color: #ff9900;">Privacy Policy</a> | <a href="#" style="color: #ff9900;">Terms of Service</a></p>
+                <p>Prices and availability are subject to change. All trademarks are property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Empty Cart Modal (Hidden by default) -->
+    <div id="emptyCartModal" style="display: none;">
+        <div class="empty-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <h2>Your Cart is Empty</h2>
+            <p>Looks like you haven't added any items to your cart yet. Start shopping to find amazing products!</p>
+            <button class="checkout-btn" id="startShoppingBtn">
+                <i class="fas fa-shopping-bag"></i>
+                Start Shopping
+            </button>
+        </div>
+    </div>
+</body>
+</html>

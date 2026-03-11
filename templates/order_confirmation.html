@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation | PrimeCart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel = "stylesheet" href = "/static/css/order_confirmation.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="logo-text">PrimeCart</span>
+                </a>
+                
+                <div class="header-actions">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="/tracking" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        Track Orders
+                    </a>
+                    <a href="/account" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        Account
+                    </a>
+                    <a href="/cart" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Order Confirmation -->
+    <main class="order-confirmation">
+        <div class="container">
+            <div class="confirmation-card">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                
+                <h1 class="confirmation-title">Order Confirmed!</h1>
+                <p class="confirmation-subtitle">Thank you for your purchase. Your order has been successfully placed.</p>
+                
+                <div class="order-number">
+                    <p>Your Order Number: <strong>{{ order_id }}</strong></p>
+                </div>
+                
+                
+                <div class="action-buttons">
+                    <a href="/tracking" class="btn btn-primary">
+                        <i class="fas fa-shipping-fast"></i>
+                        Track Your Order
+                    </a>
+                    
+                    <a href="/" class="btn btn-secondary">
+                        <i class="fas fa-shopping-bag"></i>
+                        Continue Shopping
+                    </a>
+                    
+                    <a href="/account/orders" class="btn btn-secondary">
+                        <i class="fas fa-clipboard-list"></i>
+                        View All Orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="/tracking">Track Your Order</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Your Account</h3>
+                    <ul class="footer-links">
+                        <li><a href="/account">Your Profile</a></li>
+                        <li><a href="/account/orders">Your Orders</a></li>
+                        <li><a href="#">Your Wish List</a></li>
+                        <li><a href="#">Your Recommendations</a></li>
+                        <li><a href="#">Account Settings</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>About PrimeCart</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Releases</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Stay Connected</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                        <li><a href="#"><i class="fab fa-pinterest"></i> Pinterest</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 PrimeCart. All rights reserved. | <a href="#" style="color: #ff9900;">Privacy Policy</a> | <a href="#" style="color: #ff9900;">Terms of Service</a></p>
+                <p>Real-time order tracking for customers to monitor their purchases.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add animation to success icon
+        document.addEventListener('DOMContentLoaded', function() {
+            const successIcon = document.querySelector('.success-icon');
+            
+            // Add pulse animation
+            setInterval(() => {
+                successIcon.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    successIcon.style.transform = 'scale(1)';
+                }, 300);
+            }, 3000);
+            
+            // Add order number animation
+            const orderNumber = document.querySelector('.order-number');
+            orderNumber.style.opacity = '0';
+            orderNumber.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                orderNumber.style.transition = 'all 0.5s ease-out';
+                orderNumber.style.opacity = '1';
+                orderNumber.style.transform = 'translateY(0)';
+            }, 500);
+            
+            // Confetti effect on load (simple version)
+            function createConfetti() {
+                const colors = ['#ff9900', '#ffcc00', '#00a650', '#0066cc'];
+                const confettiCount = 20;
+                
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.innerHTML = '🎉';
+                    confetti.style.position = 'fixed';
+                    confetti.style.fontSize = '20px';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.top = '-30px';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
+                    confetti.style.opacity = '0.8';
+                    confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    document.body.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }
+            }
+            
+            // Add CSS for confetti animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fall {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 0.8;
+                    }
+                    100% {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Trigger confetti on page load
+            setTimeout(createConfetti, 1000);
+            
+            // Add click event to track order button
+            const trackOrderBtn = document.querySelector('.btn-primary');
+            trackOrderBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                
+                // Simulate loading
+                setTimeout(() => {
+                    alert('Redirecting to order tracking page...');
+                    // In a real app, you would redirect:
+                    // window.location.href = '/tracking';
+                    
+                    // Reset button
+                    this.innerHTML = originalText;
+                }, 1500);
+            });
+            
+            // Add hover effects to all buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Add order details animation
+            const detailsItems = document.querySelectorAll('.detail-item');
+            detailsItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.5s ease-out';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 800 + (index * 100));
+            });
+        });
+    </script>
+</body>
+</html>

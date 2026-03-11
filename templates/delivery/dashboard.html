@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Agent Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/delivery/dashboard.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-shipping-fast"></i></div>
+            <div class="logo-text">
+                <h1>Delivery<span style="display: block; font-size: 18px;">Agent</span></h1>
+                <div class="subtitle">Fast & Reliable Delivery</div>
+            </div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+            <a href="{{ url_for('delivery_scan') }}" class="nav-item"><i class="fas fa-search"></i> <span>Scan</span></a>
+            <a href="{{ url_for('logout') }}" class="nav-item"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </nav>
+    </aside>
+    
+    <main class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h2>Delivery Agent Dashboard</h2>
+                <p>Welcome back! Tracking your assigned products and performance.</p>
+            </div>
+            <div class="header-right">
+                <button id="start-shift-btn" class="action-btn primary" style="margin-right: 15px; background-color: var(--accent-color);">
+                    <i class="fas fa-play-circle"></i> Start Shift
+                </button>
+                <div class="status-toggle" id="status-toggle">
+                    <div class="toggle-indicator"></div>
+                    <span id="status-text">Online</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="dashboard-card">
+                <h4>Today's Earnings</h4>
+                <h2 id="today-earnings">$0.00</h2>
+            </div>
+            <div class="dashboard-card">
+                <h4>Deliveries</h4>
+                <h2 id="today-deliveries">0</h2>
+            </div>
+            <div class="dashboard-card">
+                <h4>Avg. Time</h4>
+                <h2 id="avg-delivery-time">30</h2> <small>mins</small>
+            </div>
+        </div>
+        
+        <div class="dashboard-sections">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clipboard-list"></i> Assigned Products</h3>
+                    <a class="view-all" href="javascript:void(0)" onclick="fetchDeliveryData()">Refresh Data</a>
+                </div>
+                
+                <div class="deliveries-list" id="deliveries-list">
+                    <div class="loading-spinner" style="text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading assigned deliveries...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Delivery Agent Dashboard &copy; 2026 | Current Shift: <span id="shift-timer">00:00:00</span></p>
+        </div>
+    </main>
+    
+    <script>
+        let deliveries = []; // Global state for fetched data
+
+        // 1. FETCH DATA FROM BACKEND
+        async function fetchDeliveryData() {
+            try {
+                const response = await fetch('/my-delivery-data');
+                const data = await response.json();
+                
+                // Map Backend fields to Frontend UI fields
+                deliveries = data.delivery.map(item => ({
+                    id: `REF-${item.rfid_tag.substring(0, 6)}`,
+                    db_id: item.product_id,
+                    customer: item.name,           // Product Name
+                    address: item.category,        // Product Category as address placeholder
+                    status: "pending",             // Default status
+                    time: new Date(item.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    distance: "RFID Verified",
+                    payment: `$${(item.quantity * 5).toFixed(2)}`, // Simulated payment calculation
+                    notes: item.description || "No specific instructions"
+                }));
+
+                document.getElementById('today-deliveries').textContent = deliveries.length;
+                renderDeliveries();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showNotification('Could not connect to server', 'error');
+            }
+        }
+
+        function renderDeliveries() {
+            const container = document.getElementById('deliveries-list');
+            if (deliveries.length === 0) {
+                container.innerHTML = '<p style="padding:20px; color:#666;">No products assigned to you yet.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            deliveries.forEach(delivery => {
+                const deliveryElement = document.createElement('div');
+                deliveryElement.className = 'delivery-item';
+                deliveryElement.innerHTML = `
+                    <div class="delivery-header">
+                        <div class="delivery-id">${delivery.id}</div>
+                        <div class="delivery-status status-pending">Pending Pickup</div>
+                    </div>
+                    <div class="delivery-details">
+                        <div class="detail-item"><span class="detail-label">Item</span><span class="detail-value">${delivery.customer}</span></div>
+                        <div class="detail-item"><span class="detail-label">Assigned</span><span class="detail-value">${delivery.time}</span></div>
+                        <div class="detail-item"><span class="detail-label">Category</span><span class="detail-value">${delivery.address}</span></div>
+                        <div class="detail-item"><span class="detail-label">Est. Earnings</span><span class="detail-value">${delivery.payment}</span></div>
+                    </div>
+                    <div class="delivery-actions">
+                        <button class="action-btn primary" onclick="updateStatus('${delivery.id}', 'picked')">
+                            <i class="fas fa-check"></i> Accept Item
+                        </button>
+                        <button class="action-btn secondary">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                    </div>
+                `;
+                container.appendChild(deliveryElement);
+            });
+        }
+
+        // Status Management
+        function updateStatus(id, newStatus) {
+            showNotification(`Item ${id} status updated to ${newStatus}`, 'success');
+            // Here you would typically perform another fetch(POST) to update the DB
+        }
+
+        // Shift Timer Logic
+        function updateShiftTimer() {
+            if (window.shiftActive) {
+                const now = new Date();
+                const elapsedSec = Math.floor((now - window.shiftStartTime) / 1000);
+                const h = Math.floor(elapsedSec / 3600).toString().padStart(2, '0');
+                const m = Math.floor((elapsedSec % 3600) / 60).toString().padStart(2, '0');
+                const s = (elapsedSec % 60).toString().padStart(2, '0');
+                document.getElementById('shift-timer').textContent = `${h}:${m}:${s}`;
+            }
+        }
+
+        function toggleShift() {
+            const btn = document.getElementById('start-shift-btn');
+            if (!window.shiftActive) {
+                window.shiftActive = true;
+                window.shiftStartTime = new Date();
+                btn.innerHTML = '<i class="fas fa-stop-circle"></i> End Shift';
+                btn.style.backgroundColor = '#e53e3e';
+                showNotification('Shift Started', 'success');
+            } else {
+                window.shiftActive = false;
+                btn.innerHTML = '<i class="fas fa-play-circle"></i> Start Shift';
+                btn.style.backgroundColor = '#3182ce';
+                showNotification('Shift Ended', 'info');
+            }
+        }
+
+        function showNotification(msg, type) {
+            const n = document.createElement('div');
+            n.style = `position:fixed;top:20px;right:20px;padding:15px;background:white;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;border-left:5px solid ${type==='success'?'#38a169':'#3182ce'}`;
+            n.textContent = msg;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDeliveryData();
+            document.getElementById('status-toggle').addEventListener('click', () => {
+                document.getElementById('status-toggle').classList.toggle('offline');
+                const isOffline = document.getElementById('status-toggle').classList.contains('offline');
+                document.getElementById('status-text').textContent = isOffline ? 'Offline' : 'Online';
+            });
+            document.getElementById('start-shift-btn').addEventListener('click', toggleShift);
+            setInterval(updateShiftTimer, 1000);
+        });
+    </script>
+</body>
+</html>
